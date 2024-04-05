@@ -24,4 +24,4 @@ To get started with Air-Hub, follow these steps:
 
 1. Clone this repository to your local machine.
    ```bash
-   git clone https://github.com/Gideon-Buba/air-hub.git
+   git clone https://github.com/Gideon-Buba/Air-Hub.git
