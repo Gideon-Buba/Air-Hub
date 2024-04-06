@@ -20,8 +20,11 @@ Air-Hub is an open-source project inspired by Airbnb, aimed at providing a platf
 
 ## Getting Started
 
+- You can check out the data model **[here](https://drawsql.app/templates/airbnb)**
+
 To get started with Air-Hub, follow these steps:
 
 1. Clone this repository to your local machine.
    ```bash
    git clone https://github.com/Gideon-Buba/Air-Hub.git
+   
