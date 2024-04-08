@@ -1,60 +1,47 @@
 const mysql = require('mysql');
-const dotenv = require('dotenv');
+require('dotenv').config({ path: "../env/.env" });
 
-dotenv.config();
+const connection = mysql.createConnection({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || 'password',
+    database: process.env.DB_NAME || 'airhub'
+});
 
-// Function to set up MySQL connection
-function setUpConnection() {
-    return new Promise((resolve, reject) => {
-        const db = mysql.createConnection({
-            host: process.env.DB_HOST || 'localhost',
-            user: process.env.DB_USER || 'root',
-            database: process.env.DB_NAME,
-            password: process.env.DB_PASSWORD || 'password'
-        });
-
-        db.connect((err) => {
-            if (err) {
-                console.error('Error connecting to MySQL database:', err);
-                reject(err);
-                return;
-            }
-            console.log('Connected to MySQL database');
-            resolve(db);
-        });
-
-        db.on('error', (err) => {
-            console.error('MySQL connection error:', err);
-            reject(err);
-        });
-    });
-}
-
-// Function to create database if it doesn't exist
-function createDatabaseIfNotExists(db) {
-    return new Promise((resolve, reject) => {
-        db.query("CREATE DATABASE IF NOT EXISTS " + process.env.DB_NAME, (err) => {
-            if (err) {
-                console.error('Error creating database:', err);
-                reject(err);
-                return;
-            }
-            console.log('Database created successfully');
-            resolve();
-        });
-    });
-}
-
-// Set up MySQL connection and initialize database
-async function initializeDatabase() {
-    try {
-        const db = await setUpConnection();
-        await createDatabaseIfNotExists(db);
-        return db;
-    } catch (err) {
-        throw new Error('Failed to initialize database: ' + err.message);
+connection.connect((err) => {
+    if (err) {
+        console.error('Error connecting to MySQL server: ' + err.stack);
+        return;
     }
-}
+    console.log('Connected to MySQL server!');
 
-// Export the initialized database connection
-module.exports = initializeDatabase();
+    const createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS airhub";
+
+    // Create database query
+    connection.query(createDatabaseQuery, (err, result) => {
+        if (err) {
+            console.error('Error creating database: ' + err.stack);
+            return;
+        }
+        console.log('Database created or already exists:', result);
+
+        // Create table query
+        const createTableQuery = `CREATE TABLE IF NOT EXISTS users (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            phone_number VARCHAR(255) NOT NULL
+        )`;
+
+        connection.query(createTableQuery, (err, result) => {
+            if (err) {
+                console.error('Error creating table: ' + err.stack);
+                return;
+            }
+            console.log('Table created or already exists:', result);
+        });
+
+        connection.end();
+    });
+});
