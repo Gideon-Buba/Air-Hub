@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
+const port = process.env.PORT || 3000;
+
 
 app.use(express.json());
 
@@ -9,7 +11,7 @@ const dbConnection = require('./config/db');
 const dbStructureCreator = require('./config/db-structure');
 
 
-app.get('/hello', async (req, res) => {
+app.get('/users', async (req, res) => {
     const connection = await dbConnection();
     connection.query("SELECT * FROM users", (err, result) => {
         if (err) {
@@ -26,7 +28,7 @@ app.get('/hello', async (req, res) => {
 dbConnection().then(connection=> {
     return dbStructureCreator(connection);
 }).then(() => {
-    app.listen(3000, () => {
-        console.log('Server started on port 3000');
+    app.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`);
     });
 });

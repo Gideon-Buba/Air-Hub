@@ -9,7 +9,11 @@ const connection = mysql.createConnection({
 
 let existingConnection = null;
 
-
+/**
+ * Creates a connection to MySQL, 
+ * further invocation returns the existing connection
+ * @returns mysql.Connection
+ */
 module.exports = async () => {
     return existingConnection || new Promise((resolve, reject) => {
         connection.connect((err) => {
