@@ -10,6 +10,13 @@ app.use(express.json());
 const dbConnection = require('./config/db');
 const dbStructureCreator = require('./config/db-structure');
 
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+})
+
+app.get("/signup", (req, res) => {
+    res.send('Hello World!');
+})
 
 app.get('/users', async (req, res) => {
     const connection = await dbConnection();
@@ -22,6 +29,20 @@ app.get('/users', async (req, res) => {
         }
     })
 });
+
+app.get('/users/:id', async (req, res) => {
+    const connection = await dbConnection();
+    connection.query(`SELECT * FROM users WHERE id=${req.params.id}`, (err, result) => {
+        if (err) {
+            console.error('Error fetching user:', err);
+            res.status(500).json({ error: 'Failed to fetch user' });
+        } else if (result.length === 0) {
+            res.status(404).json({ error: 'User not found' });
+        } else {
+            res.json(result[0]);
+        }
+    })
+})
 
 
 
