@@ -14,6 +14,7 @@ let existingConnection = null;
  * further invocation returns the existing connection
  * @returns mysql.Connection
  */
+
 module.exports = async () => {
     return existingConnection || new Promise((resolve, reject) => {
         connection.connect((err) => {
