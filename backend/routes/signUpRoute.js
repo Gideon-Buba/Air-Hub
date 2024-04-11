@@ -3,12 +3,13 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 
 // Db connection module
-const connection = require('../config/db');
+const db = require('../config/db');
 
 
 // POST signup route to db
-router.post("/api/signup", async (req, res) => {
+router.post("/", async (req, res) => {
     try {
+        const connection = await db();
         const { name, email, password, phone_number } = req.body;
 
         // password hashing function
