@@ -8,7 +8,10 @@ app.use(express.json());
 
 const dbConnection = require('./config/db');
 const dbStructureCreator = require('./config/db-structure');
+
+// Routes
 const signUpRoute = require('./routes/signUpRoute');
+const loginRoutes = require('./routes/loginRoutes');
 
 
 app.get('/', (req, res) => {
@@ -17,6 +20,8 @@ app.get('/', (req, res) => {
 
 // Signup route
 app.use('/api/signup', signUpRoute);
+// login route
+app.use('/api/login', loginRoutes);
 
 
 
