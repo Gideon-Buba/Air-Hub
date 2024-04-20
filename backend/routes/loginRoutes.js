@@ -20,7 +20,7 @@ const query = (queryString, params = []) => new Promise((resolve, reject) => {
     });
 
 
-router.post("/", verifyToken, async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -42,28 +42,26 @@ router.post("/", verifyToken, async (req, res) => {
         }
 
         const { password: _password, ...userData } = user
-
-        // User authenticated successfully
-        res.status(200).json({ message: 'Login successful', user: userData });
-
         const accessToken = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-        res.json({ accessToken: accessToken });
+        // User authenticated successfully
+        return res.status(200).json({ message: 'Login successful', user: userData, accessToken: accessToken });
     } catch (err) {
         console.error("Error logging in:", err);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 });
 
 function verifyToken(req, res, next) {
-    const bearerHeader = req.headers['authorization'];
-    if (typeof bearerHeader !== 'undefined') {
-        const bearer = bearerHeader.split(' ');
-        const bearerToken = bearer[1];
-        req.token = bearerToken;
-        next();
-    } else {
-        res.sendStatus(403);
-    }
+    const bearerHeader = req.headers['authorization']; // looking for a header called 'authorization'
+    const condition = typeof bearerHeader !== 'undefined';
+
+    if (!condition) {
+        return res.sendStatus(403);
+    } 
+
+    const [, token] = bearerHeader.split(' '); // header is usually sent as 'Authorization: Bearer <token>'
+    req.token = token;
+    return next();
 }
 
 module.exports = router;
