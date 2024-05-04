@@ -12,6 +12,7 @@ const dbStructureCreator = require('./config/db-structure');
 // Routes
 const signUpRoute = require('./routes/signUpRoute');
 const loginRoutes = require('./routes/loginRoutes');
+const profileRoute = require('./routes/profileRoute');
 
 
 app.get('/', (req, res) => {
@@ -22,14 +23,15 @@ app.get('/', (req, res) => {
 app.use('/api/signup', signUpRoute);
 // login route
 app.use('/api/login', loginRoutes);
-
+// profile route
+app.use('/api/profile', profileRoute);
 
 
 app.get('/users', async (req, res) => {
     const connection = await dbConnection();
     connection.query("SELECT * FROM users", (err, result) => {
         if (err) {
-            console.error('Error fetching users:', err);
+            console.error('Error fetching users:', err); 
             res.status(500).json({ error: 'Failed to fetch users' });
         } else {
             res.json(result);
