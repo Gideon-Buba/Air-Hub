@@ -2,23 +2,19 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-// Db connection module
 const db = require("../config/db");
 
-
 const query = (queryString, params = []) => new Promise((resolve, reject) => {
-        db().then(connection => {
-            connection.query(queryString, params, (err, result) => {
-                if (err) {
-                    console.error('Error executing query: ' + err.stack);
-                    return reject(err);
-                }
-                return resolve(result);
-            });
+    db().then(connection => {
+        connection.query(queryString, params, (err, result) => {
+            if (err) {
+                console.error('Error executing query: ' + err.stack);
+                return reject(err);
+            }
+            return resolve(result);
         });
     });
-
+});
 
 router.post("/", async (req, res) => {
     try {
@@ -33,7 +29,6 @@ router.post("/", async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-
         // Compare passwords
         const [user] = result;
         const passwordMatch = await bcrypt.compare(password, user.password);
@@ -41,8 +36,9 @@ router.post("/", async (req, res) => {
             return res.status(401).json({ error: 'Invalid password' });
         }
 
-        const { password: _password, ...userData } = user
+        const { password: _password, ...userData } = user;
         const accessToken = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+        
         // User authenticated successfully
         return res.status(200).json({ message: 'Login successful', user: userData, accessToken: accessToken });
     } catch (err) {
@@ -64,4 +60,7 @@ function verifyToken(req, res, next) {
     return next();
 }
 
-module.exports = router;
+module.exports = {
+    router: router,
+    verifyToken: verifyToken
+};
