@@ -11,7 +11,7 @@ const dbStructureCreator = require('./config/db-structure');
 
 // Routes
 const signUpRoute = require('./routes/signUpRoute');
-const loginRoutes = require('./routes/loginRoutes');
+const { router: loginRoutes } = require('./routes/loginRoutes');
 const profileRoute = require('./routes/profileRoute');
 
 
