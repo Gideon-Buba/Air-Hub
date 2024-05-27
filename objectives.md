@@ -1,23 +1,20 @@
 # Backend Objectives for Air-hub Project
 
-  
-
 ## Database Setup
 
 - [x] Design the db schema
 
 - [x] Set up a MySQL db
 
-- [x] Create necessary tables (users, listings, bookings) 
-	- [x] users table
-	- [x] rooms table
-	- [x] reservations table
-	- [x] reviews
-	- [x] media
+- [x] Create necessary tables (users, listings, bookings)
+
+  - [x] users table
+  - [x] rooms table
+  - [x] reservations table
+  - [x] reviews
+  - [x] media
 
 - [x] Implement relationships between tables (e.g., foreign keys)
-
-  
 
 ## Server Setup
 
@@ -29,21 +26,17 @@
 
 - [x] Configure Express.js server
 
-- [ ] Implement basic routes (e.g., home route, user routes, booking routes)
-
-  
+- [x] Implement basic routes (e.g., home route, user routes, booking routes)
 
 ## User Authentication
 
-- [ ] Implement user signup endpoint
+- [x] Implement user signup endpoint
 
-- [ ] Implement user login endpoint
+- [x] Implement user login endpoint
 
-- [ ] Implement authentication middleware
+- [x] Implement authentication middleware
 
-- [ ] Secure password storage with Bcrypt
-
-  
+- [x] Secure password storage with Bcrypt
 
 ## Listings Management
 
@@ -57,8 +50,6 @@
 
 - [ ] Implement endpoint to delete a listing
 
-  
-
 ## Bookings Management
 
 - [ ] Implement endpoint to create a booking
@@ -68,9 +59,6 @@
 - [ ] Implement endpoint to update a booking
 
 - [ ] Implement endpoint to cancel a booking
-
-  
-  
 
 ## Documentation
 
