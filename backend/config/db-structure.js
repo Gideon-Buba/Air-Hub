@@ -1,32 +1,32 @@
 /**
  * Creates Database structure
- * @param {object} connection 
- * @returns 
+ * @param {object} connection
+ * @returns
  */
 module.exports = async (connection) => {
-
-    /**
-     * Runs a query and returns result, or throws error if encountered
-     * @param {string} queryString query you want to run
-     * @returns 
-     */
-    const query = (queryString) => new Promise((resolve, reject) => {
-        connection.query(queryString, (err, result) => {
-            if (err) {
-                console.error('Error executing query: ' + err.stack);
-                return reject(err);
-            }
-            return resolve(result);
-        });
+  /**
+   * Runs a query and returns result, or throws error if encountered
+   * @param {string} queryString query you want to run
+   * @returns
+   */
+  const query = (queryString) =>
+    new Promise((resolve, reject) => {
+      connection.query(queryString, (err, result) => {
+        if (err) {
+          console.error("Error executing query: " + err.stack);
+          return reject(err);
+        }
+        return resolve(result);
+      });
     });
 
-    const createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS airhub";
+  const createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS airhub";
 
-    /**
-     * Key value structure for table creation queries
-     */
-    const createTables = {
-        users: `CREATE TABLE IF NOT EXISTS users (
+  /**
+   * Key value structure for table creation queries
+   */
+  const createTables = {
+    users: `CREATE TABLE IF NOT EXISTS users (
             id INT PRIMARY KEY AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
             bio TEXT,
@@ -35,7 +35,7 @@ module.exports = async (connection) => {
             phone_number VARCHAR(255) NOT NULL
         )`,
 
-        reservations: `CREATE TABLE IF NOT EXISTS reservations (
+    reservations: `CREATE TABLE IF NOT EXISTS reservations (
             id INT PRIMARY KEY AUTO_INCREMENT,
             user_id INT NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id),
@@ -46,7 +46,7 @@ module.exports = async (connection) => {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`,
 
-        rooms: `CREATE TABLE IF NOT EXISTS rooms (
+    rooms: `CREATE TABLE IF NOT EXISTS rooms (
             id INT PRIMARY KEY AUTO_INCREMENT,
             owner_id INT NOT NULL,
             home_type VARCHAR(255) NOT NULL,
@@ -61,29 +61,28 @@ module.exports = async (connection) => {
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`,
 
-        reviews: `CREATE TABLE IF NOT EXISTS reviews (
+    reviews: `CREATE TABLE IF NOT EXISTS reviews (
             id INT PRIMARY KEY AUTO_INCREMENT,
             reservation_id INT NOT NULL,
             rating INT,
             comment VARCHAR(255)
         )`,
 
-        media: `CREATE TABLE IF NOT EXISTS media (
+    media: `CREATE TABLE IF NOT EXISTS media (
             id INT PRIMARY KEY AUTO_INCREMENT,
             model_id INT NOT NULL,
             file_name VARCHAR(255) NOT NULL
-        )`
-    };
+        )`,
+  };
 
+  // Create database query
+  await query(createDatabaseQuery);
 
-    // Create database query
-    await query(createDatabaseQuery);
+  for (const [tableName, tableQuery] of Object.entries(createTables)) {
+    await query(tableQuery).catch((err) => {
+      console.error(`Error creating ${tableName} table: ` + err.stack);
+    });
+  }
 
-    for(const [tableName, tableQuery] of Object.entries(createTables)) {
-        await query(tableQuery).catch(err => {
-            console.error(`Error creating ${tableName} table: ` + err.stack);
-        });
-    }
-
-    return true;
+  return true;
 };
