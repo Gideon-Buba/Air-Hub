@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../config/db");
+const UserService = require("../services/user.service");
 
 const query = (queryString, params = []) =>
   new Promise((resolve, reject) => {
@@ -43,20 +44,18 @@ router.post("/", async (req, res) => {
     });
 
     // User authenticated successfully
-    return res
-      .status(200)
-      .json({
-        message: "Login successful",
-        user: userData,
-        accessToken: accessToken,
-      });
+    return res.status(200).json({
+      message: "Login successful",
+      user: userData,
+      accessToken: accessToken,
+    });
   } catch (err) {
     console.error("Error logging in:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
 
-function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
   const bearerHeader = req.headers["authorization"]; // looking for a header called 'authorization'
   const condition = typeof bearerHeader !== "undefined";
 
@@ -65,7 +64,17 @@ function verifyToken(req, res, next) {
   }
 
   const [, token] = bearerHeader.split(" "); // header is usually sent as 'Authorization: Bearer <token>'
-  req.token = token;
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  if (!decoded || !decoded.email) {
+    return res.sendStatus(403);
+  }
+
+  req.user = await UserService.getUserByEmail(decoded.email);
+
+  if (!req.user) {
+    return res.sendStatus(403);
+  }
+
   return next();
 }
 

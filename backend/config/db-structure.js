@@ -73,6 +73,13 @@ module.exports = async (connection) => {
             model_id INT NOT NULL,
             file_name VARCHAR(255) NOT NULL
         )`,
+    bookings: `CREATE TABLE IF NOT EXISTS bookings (
+          id INT PRIMARY KEY AUTO_INCREMENT,
+          user_id INT NOT NULL,
+          date DATE NOT NULL,
+          time DATETIME NOT NULL,
+          details VARCHAR(255) NOT NULL
+    )`,
   };
 
   // Create database query
