@@ -15,7 +15,7 @@ let existingConnection = null;
  * @returns mysql.Connection
  */
 
-module.exports = async () => {
+module.exports.connection = async () => {
   return (
     existingConnection ||
     new Promise((resolve, reject) => {
@@ -30,3 +30,14 @@ module.exports = async () => {
     })
   );
 };
+
+module.exports.query = (queryString, params = []) =>
+  new Promise((resolve, reject) => {
+    existingConnection.query(queryString, params, (err, result) => {
+      if (err) {
+        console.error("Error executing query: " + err.stack);
+        return reject(err);
+      }
+      return resolve(result);
+    });
+  });

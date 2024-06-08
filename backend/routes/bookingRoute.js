@@ -2,26 +2,11 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 const { verifyToken } = require("./loginRoutes");
+const BookingController = require("../controller/booking.controller");
+const $ = require("../config/async-handler");
 
 // Get all bookings for the authenticated user
-router.get("/", verifyToken, async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    // Query the database to fetch bookings for the authenticated user
-    const getBookingsQuery = `SELECT * FROM bookings WHERE user_id = ?`;
-    const bookings = await db.query(getBookingsQuery, [userId]);
-
-    if (bookings.length === 0) {
-      return res.status(404).json({ error: "No bookings found" });
-    }
-
-    return res.status(200).json({ bookings });
-  } catch (error) {
-    console.error("Error fetching bookings:", error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
+router.get("/", verifyToken, $(BookingController.getBooking));
 
 // Create a new booking
 router.post("/", verifyToken, async (req, res) => {

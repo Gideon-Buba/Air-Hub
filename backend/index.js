@@ -5,7 +5,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-const dbConnection = require("./config/db");
+const { connection: dbConnection } = require("./config/db");
 const dbStructureCreator = require("./config/db-structure");
 
 // Routes
@@ -53,6 +53,15 @@ app.get("/users/:id", async (req, res) => {
       }
     }
   );
+});
+
+app.use((error, req, res, next) => {
+  // console.error(err.stack);
+  return res.status(error.code || 500).json({
+    statusCode: error.code || 500,
+    error: error.name || "Server error",
+    message: error.message || "Internal server error",
+  });
 });
 
 dbConnection()
